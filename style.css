@@ -64,7 +64,7 @@ html, body {
 
 /* 1. ส่วนโลโก้ร้าน */
 .logo-container {
-    height: 10vh; /* บีบโลโก้ลงนิดนึงเพื่อคืนพื้นที่ให้ตัวเลข */
+    height: 15vh; /* บีบโลโก้ลงนิดนึงเพื่อคืนพื้นที่ให้ตัวเลข */
     display: flex;
     justify-content: center;
     align-items: center;
