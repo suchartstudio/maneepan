@@ -6,78 +6,95 @@
 
 body {
     font-family: 'Kanit', sans-serif;
-    background-color: #fff; 
-    overflow: hidden; /* ป้องกันไม่ให้หน้าจอมีแถบเลื่อน */
+    background-color: #FF0000; /* เปลี่ยนพื้นหลังทั้งหน้าเป็นสีแดง */
+    overflow: hidden; /* ป้องกันหน้าจอมีแถบเลื่อน */
     display: flex;
     flex-direction: column;
     height: 100vh;
+    color: #fff;
 }
 
 .layout-wrapper {
     display: flex;
-    flex-direction: row;
-    height: 90vh; /* ความสูงส่วนบน */
+    justify-content: center;
+    align-items: center;
+    height: 90vh; /* พื้นที่แสดงราคา */
     width: 100%;
+    padding: 2vh 5vw;
 }
 
-/* ==================================
-   ส่วนที่ 1: แถบราคาทอง (ด้านซ้าย)
-   ================================== */
-.sidebar {
-    width: 38%; 
-    background-color: #FF0000; /* สีแดงสด */
+.price-display-full {
+    width: 100%;
+    max-width: 1400px; /* ไม่ให้กว้างเกินไปบนจอทีวีขนาดใหญ่ */
     display: flex;
     flex-direction: column;
-    padding: 2vh 2.5vw; 
-    color: #fff;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.4);
-    z-index: 10;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
 }
 
 /* โลโก้ */
 .logo-container {
     text-align: center;
-    margin-bottom: 1vh; /* ลดช่องว่างใต้โลโก้ลงอีก */
+    height: 15vh;
     display: flex;
     justify-content: center; 
-    align-items: center;    
+    align-items: center;
+    margin-bottom: 2vh;
 }
 
 .main-logo {
-    max-width: 45%; /* ย่อขนาดโลโก้ลงเหลือ 45% (จากเดิม 60%) */
-    height: auto;    
+    max-height: 100%;
+    width: auto;    
     display: block;  
 }
 
-/* หัวข้อราคาทอง */
-.gold-title {
-    font-size: 2.5vw;
-    font-weight: 600;
-    color: #FFFF00; /* สีเหลืองสด */
-    margin-bottom: 0.5vh;
-    text-align: left;
-    padding-left: 0.5vw;
+/* หมวดหมู่ทอง */
+.gold-category {
+    width: 100%;
+    margin-bottom: 3vh;
 }
 
-/* กล่องราคา ขยายความสูงเพิ่มขึ้นอีก */
+.gold-title {
+    font-size: 4vw; /* ตัวหนังสือใหญ่ขึ้น */
+    font-weight: 600;
+    color: #FFFF00; /* สีเหลืองทอง */
+    margin-bottom: 2vh;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+}
+
+/* คอนเทนเนอร์จัดกล่องราคา */
+.price-container {
+    display: flex;
+    gap: 3vw; /* ระยะห่างระหว่างกล่องรับซื้อ-ขายออก */
+    width: 100%;
+    justify-content: center;
+}
+
+/* จัดให้อยู่ตรงกลาง กรณีมีกล่องเดียว (ทองรูปพรรณ) */
+.price-container.single-price .price-row {
+    width: 48.5%; /* ให้ความกว้างเท่ากับกล่องด้านบนพอดี */
+}
+
+/* กล่องราคา */
 .price-row {
     display: flex;
-    width: 100%;
-    height: 16vh; /* ขยายสูงขึ้นเป็น 16vh (พื้นที่จากโลโก้ที่เล็กลง) */
-    margin-bottom: 1.2vh; /* ลดช่องว่างระหว่างกล่องนิดหน่อยให้พอดีจอ */
-    border-radius: 30px; /* เพิ่มความโค้งมนให้รับกับกล่องที่สูงมาก */
+    flex: 1;
+    height: 18vh; /* ความสูงกล่อง */
+    border-radius: 40px; /* ขอบโค้งมน */
     overflow: hidden; 
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 
 .price-label {
     width: 35%; 
-    background: linear-gradient(to bottom, #FFFF99, #FFD700); /* ไล่สีเหลืองสด-ทอง */
+    background: linear-gradient(to bottom, #FFFF99, #FFD700); 
     color: #000;
     display: flex;
+    justify-content: center;
     align-items: center;
-    padding-left: 2vw;
-    font-size: 2.0vw; 
+    font-size: 3vw; 
     font-weight: 700;
 }
 
@@ -86,50 +103,30 @@ body {
     background-color: #ffffff;
     color: #000;
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: flex-end;
-    padding-right: 2vw;
-    font-size: 5.0vw; /* ขยายตัวเลขให้ใหญ่ขึ้นอีกนิด รับกับกรอบที่สูงขึ้น */
+    font-size: 7.5vw; /* ตัวเลขราคาใหญ่เต็มตา */
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 
-/* กล่องแสดงเวลาอัพเดท */
+/* เวลาอัพเดท */
 .update-time {
-    margin-top: auto; 
-    font-size: 1.0vw; 
-    color: #FFFF00; /* สีเหลืองสด */
+    font-size: 1.5vw; 
+    color: #FFFF00; 
     font-weight: 300;
     text-align: center;
-    opacity: 0.9;
+    margin-top: 1vh;
 }
 
 /* ==================================
-   ส่วนที่ 2: พื้นที่สื่อ (ด้านขวา)
-   ================================== */
-.media-section {
-    width: 62%;
-    background-color: #000; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.media-section img,
-.media-section video {
-    width: 100%;
-    height: 100%;
-    object-fit: fill !important; 
-}
-
-/* ==================================
-   ส่วนที่ 3: แถบตัววิ่ง (ด้านล่าง)
+   แถบตัววิ่ง (ด้านล่าง)
    ================================== */
 .marquee-section {
     height: 10vh; 
-    background-color: #FF0000; /* สีแดงสด */
-    color: #FFFF00; /* สีเหลืองสด */
+    background-color: #a80000; /* แดงเข้มให้ตัดกับพื้นหลังแดงสด */
+    border-top: 2px solid #FFFF00; /* เส้นคั่นสีเหลือง */
+    color: #FFFF00; 
     display: flex;
     align-items: center;
     font-size: 4vh;
