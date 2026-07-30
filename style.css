@@ -4,136 +4,142 @@
     padding: 0;
 }
 
-body {
-    font-family: 'Kanit', sans-serif;
-    background-color: #FF0000; /* เปลี่ยนพื้นหลังทั้งหน้าเป็นสีแดง */
-    overflow: hidden; /* ป้องกันหน้าจอมีแถบเลื่อน */
-    display: flex;
-    flex-direction: column;
+html, body {
+    width: 100vw;
     height: 100vh;
+    overflow: hidden; /* ป้องกันแถบเลื่อนทุกลักษณะ */
+    font-family: 'Kanit', sans-serif;
+    background-color: #FF0000; /* สีแดงหลักของร้าน */
     color: #fff;
 }
 
+/* คอนเทนเนอร์หลักจัดกลางจอทีวี */
 .layout-wrapper {
+    width: 100vw;
+    height: 91vh; /* เว้นพื้นที่ 9vh ไว้ให้แถบข้อความตัววิ่งด้านล่าง */
+    padding: 1.5vh 3vw; /* เผื่อขอบจอทีวี (TV Overscan Safe Area) ป้องกันขอบบัง */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh; /* พื้นที่แสดงราคา */
-    width: 100%;
-    padding: 2vh 5vw;
 }
 
 .price-display-full {
     width: 100%;
-    max-width: 1400px; /* ไม่ให้กว้างเกินไปบนจอทีวีขนาดใหญ่ */
+    max-width: 1600px; /* จำกัดความกว้างไม่ให้ยืดขยายจนเสียทรงบนจออัลตราไวเดอร์ */
+    height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between; /* กระจายระยะห่างแนวตั้งให้ลงตัวพอดี 100% */
     align-items: center;
-    justify-content: space-evenly;
-    height: 100%;
 }
 
-/* โลโก้ */
+/* 1. ส่วนโลโก้ร้าน */
 .logo-container {
-    text-align: center;
-    height: 15vh;
+    height: 11vh;
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
-    margin-bottom: 2vh;
 }
 
 .main-logo {
     max-height: 100%;
-    width: auto;    
-    display: block;  
+    max-width: 100%;
+    object-fit: contain;
 }
 
-/* หมวดหมู่ทอง */
+/* 2. หมวดหมู่ราคาทอง */
 .gold-category {
     width: 100%;
-    margin-bottom: 3vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .gold-title {
-    font-size: 4vw; /* ตัวหนังสือใหญ่ขึ้น */
+    font-size: clamp(1.6rem, 2.8vw, 4vh); /* ฟอนต์ปรับขนาดอัตโนมัติตามจอ ไม่ล้นแน่นอน */
     font-weight: 600;
     color: #FFFF00; /* สีเหลืองทอง */
-    margin-bottom: 2vh;
+    margin-bottom: 1vh;
     text-align: center;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
 }
 
-/* คอนเทนเนอร์จัดกล่องราคา */
+/* คอนเทนเนอร์ใส่กล่องราคา */
 .price-container {
     display: flex;
-    gap: 3vw; /* ระยะห่างระหว่างกล่องรับซื้อ-ขายออก */
+    gap: 2.5vw; /* ระยะห่างระหว่างกล่องรับซื้อ-ขายออก */
     width: 100%;
     justify-content: center;
 }
 
-/* จัดให้อยู่ตรงกลาง กรณีมีกล่องเดียว (ทองรูปพรรณ) */
+/* จัดกล่องทองรูปพรรณ (ที่มีกล่องเดียว) ให้ความกว้างเท่ากับกล่องด้านบน */
 .price-container.single-price .price-row {
-    width: 48.5%; /* ให้ความกว้างเท่ากับกล่องด้านบนพอดี */
+    width: 48.75%;
+    flex: none;
 }
 
-/* กล่องราคา */
+/* กล่องแสดงราคา */
 .price-row {
     display: flex;
     flex: 1;
-    height: 18vh; /* ความสูงกล่อง */
-    border-radius: 40px; /* ขอบโค้งมน */
-    overflow: hidden; 
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    height: 17vh; /* ความสูงพอดีกับหน้าจอทีวี 16:9 */
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .price-label {
-    width: 35%; 
-    background: linear-gradient(to bottom, #FFFF99, #FFD700); 
+    width: 32%;
+    background: linear-gradient(180deg, #FFFF99 0%, #FFD700 100%);
     color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3vw; 
+    font-size: clamp(1.3rem, 2.2vw, 3.5vh);
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .price-value {
-    width: 65%; 
+    width: 68%;
     background-color: #ffffff;
     color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 7.5vw; /* ตัวเลขราคาใหญ่เต็มตา */
+    font-size: clamp(2.5rem, 5.2vw, 7.5vh); /* ปรับขนาดให้พอดีกล่องขาว ไม่ล้นออกนอกขอบ */
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    padding: 0 1vw;
 }
 
-/* เวลาอัพเดท */
+/* 3. เวลาอัปเดตราคา */
 .update-time {
-    font-size: 1.5vw; 
-    color: #FFFF00; 
-    font-weight: 300;
+    font-size: clamp(0.9rem, 1.3vw, 2vh);
+    color: #FFFF00;
+    font-weight: 400;
     text-align: center;
-    margin-top: 1vh;
+    white-space: nowrap;
 }
 
-/* ==================================
-   แถบตัววิ่ง (ด้านล่าง)
-   ================================== */
+/* 4. แถบข้อความตัววิ่งด้านล่าง */
 .marquee-section {
-    height: 10vh; 
-    background-color: #a80000; /* แดงเข้มให้ตัดกับพื้นหลังแดงสด */
-    border-top: 2px solid #FFFF00; /* เส้นคั่นสีเหลือง */
-    color: #FFFF00; 
+    height: 9vh;
+    background-color: #8B0000; /* แดงเข้มให้ตัดกับพื้นหลัง */
+    border-top: 3px solid #FFFF00;
+    color: #FFFF00;
     display: flex;
     align-items: center;
-    font-size: 4vh;
+    font-size: clamp(1.4rem, 3.2vh, 4vh);
     font-weight: 500;
     z-index: 10;
+    overflow: hidden;
 }
 
 marquee {
     width: 100%;
+    line-height: 9vh;
 }
