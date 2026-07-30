@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Signage</title>
+    <title>ร้านทองแม่แตง - Digital Signage (จอ 16:9 เน้นราคาเต็มตา)</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <!-- 🌟 นาฬิกา มุมขวาบน -->
+    <div class="clock-container">
+        <div class="clock-time" id="current-time">00:00:00</div>
+        <div class="clock-date" id="current-date">กำลังโหลดวันเวลา...</div>
+    </div>
 
     <div class="layout-wrapper">
         <div class="price-display-full">
             
             <!-- โลโก้ร้าน -->
             <div class="logo-container">
-                <img src="logo.png" alt="ร้านทอง Logo" class="main-logo" onerror="this.style.display='none'">
+                <img src="logo.png" alt="ร้านทองแม่แตง Logo" class="main-logo" onerror="this.style.display='none'">
             </div>
 
             <!-- ราคาทองคำแท่ง -->
@@ -43,7 +49,7 @@
                 </div>
             </div>
 
-            <!-- เวลาอัปเดตราคา -->
+            <!-- เวลาอัปเดตราคาจากระบบ -->
             <div class="update-time" id="update-time">อัพเดทราคาล่าสุด: -</div>
 
         </div>
@@ -59,6 +65,26 @@
     <div id="ornament-sell" style="display: none;">-</div>
 
     <script type="module" src="display.js"></script>
+
+    <!-- 🌟 สคริปต์สำหรับให้นาฬิกาเดินอัตโนมัติ -->
+    <script>
+        function updateClock() {
+            const now = new Date();
+            // จัดรูปแบบเวลา HH:mm:ss
+            const timeString = now.toLocaleTimeString('th-TH', { hour12: false });
+            // จัดรูปแบบวันที่ เช่น วันพฤหัสบดีที่ 30 กรกฎาคม 2569
+            const dateString = now.toLocaleDateString('th-TH', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('current-time').innerText = timeString;
+            document.getElementById('current-date').innerText = dateString;
+        }
+        setInterval(updateClock, 1000); // อัปเดตทุก 1 วินาที
+        updateClock(); // เรียกใช้งานครั้งแรกทันที
+    </script>
 
 </body>
 </html>
