@@ -3,53 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ร้านทองแม่แตง - Digital Signage</title>
+    <title>ร้านทองแม่แตง - Digital Signage (ราคาเต็มจอ)</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="layout-wrapper">
-        
-        <div class="sidebar">
+        <div class="price-display-full">
             
+            <!-- โลโก้ -->
             <div class="logo-container">
                 <img src="logo.png" alt="ร้านทองแม่แตง Logo" class="main-logo" onerror="this.style.display='none'">
             </div>
 
-            <div class="gold-title">ราคาทองคำแท่ง 96.5%</div>
-            <div class="price-row">
-                <div class="price-label">รับซื้อ</div>
-                <div class="price-value" id="bar-buy">-</div>
-            </div>
-            <div class="price-row">
-                <div class="price-label">ขายออก</div>
-                <div class="price-value" id="bar-sell">-</div>
-            </div>
-
-            <div class="gold-title" style="margin-top: 3vh;">ราคาทองรูปพรรณ 96.5%</div>
-            <div class="price-row">
-                <div class="price-label">รับซื้อ</div>
-                <div class="price-value" id="ornament-buy">-</div>
-            </div>
-            <div class="price-row">
-                <div class="price-label">ขายออก</div>
-                <div class="price-value" id="ornament-sell">-</div>
+            <!-- ราคาทองคำแท่ง -->
+            <div class="gold-category">
+                <div class="gold-title">ราคาทองคำแท่ง 96.5%</div>
+                <div class="price-container">
+                    <div class="price-row">
+                        <div class="price-label">รับซื้อ</div>
+                        <div class="price-value" id="bar-buy">-</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-label">ขายออก</div>
+                        <div class="price-value" id="bar-sell">-</div>
+                    </div>
+                </div>
             </div>
 
+            <!-- ราคาทองรูปพรรณ (มีแค่รับซื้อ) -->
+            <div class="gold-category">
+                <div class="gold-title">ราคาทองรูปพรรณ 96.5%</div>
+                <div class="price-container single-price">
+                    <div class="price-row">
+                        <div class="price-label">รับซื้อ</div>
+                        <div class="price-value" id="ornament-buy">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- เวลาอัพเดท -->
             <div class="update-time" id="update-time">อัพเดทราคาล่าสุด: -</div>
 
         </div>
-
-        <div class="media-section" id="media-container">
-            <img src="default-bg.jpg" alt="Media Background">
-        </div>
-
     </div>
 
+    <!-- แถบตัววิ่ง -->
     <div class="marquee-section">
         <marquee scrollamount="6" id="marquee-text">กำลังโหลดข้อมูล...</marquee>
     </div>
+
+    <!-- Element ที่ซ่อนไว้เพื่อป้องกัน JavaScript Error จาก display.js -->
+    <div id="media-container" style="display: none;"></div>
+    <div id="ornament-sell" style="display: none;">-</div>
 
     <script type="module" src="display.js"></script>
 
