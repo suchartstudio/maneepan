@@ -7,17 +7,46 @@
 html, body {
     width: 100vw;
     height: 100vh;
-    overflow: hidden; /* ป้องกันแถบเลื่อนทุกลักษณะ */
+    overflow: hidden; /* ป้องกันแถบเลื่อน */
     font-family: 'Kanit', sans-serif;
     background-color: #FF0000; /* สีแดงหลักของร้าน */
     color: #fff;
+    position: relative; /* สำหรับวางนาฬิกา */
 }
 
-/* คอนเทนเนอร์หลักจัดกลางจอทีวี */
+/* ==================================
+   🌟 นาฬิกา มุมขวาบน
+   ================================== */
+.clock-container {
+    position: absolute;
+    top: 3vh;
+    right: 4vw;
+    color: #ffffff;
+    text-align: right;
+    z-index: 100;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.6); /* เพิ่มเงาให้ตัวเลขสีขาวอ่านง่ายขึ้น */
+}
+
+.clock-time {
+    font-size: clamp(2rem, 3.5vw, 6vh);
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.clock-date {
+    font-size: clamp(1rem, 1.2vw, 2.5vh);
+    font-weight: 300;
+    margin-top: 0.5vh;
+}
+
+/* ==================================
+   เค้าโครงหลัก
+   ================================== */
 .layout-wrapper {
     width: 100vw;
-    height: 91vh; /* เว้นพื้นที่ 9vh ไว้ให้แถบข้อความตัววิ่งด้านล่าง */
-    padding: 1.5vh 3vw; /* เผื่อขอบจอทีวี (TV Overscan Safe Area) ป้องกันขอบบัง */
+    height: 91vh; 
+    padding: 1.5vh 3vw; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,17 +54,17 @@ html, body {
 
 .price-display-full {
     width: 100%;
-    max-width: 1600px; /* จำกัดความกว้างไม่ให้ยืดขยายจนเสียทรงบนจออัลตราไวเดอร์ */
+    max-width: 1700px; /* ขยายความกว้างสูงสุดให้กล่องใหญ่ขึ้นได้อีก */
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* กระจายระยะห่างแนวตั้งให้ลงตัวพอดี 100% */
+    justify-content: space-between; 
     align-items: center;
 }
 
 /* 1. ส่วนโลโก้ร้าน */
 .logo-container {
-    height: 11vh;
+    height: 10vh; /* บีบโลโก้ลงนิดนึงเพื่อคืนพื้นที่ให้ตัวเลข */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -56,38 +85,37 @@ html, body {
 }
 
 .gold-title {
-    font-size: clamp(1.6rem, 2.8vw, 4vh); /* ฟอนต์ปรับขนาดอัตโนมัติตามจอ ไม่ล้นแน่นอน */
+    font-size: clamp(1.8rem, 3.2vw, 4.5vh); /* ขยายชื่อหมวดหมู่ */
     font-weight: 600;
-    color: #FFFF00; /* สีเหลืองทอง */
+    color: #FFFF00; 
     margin-bottom: 1vh;
     text-align: center;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
     white-space: nowrap;
 }
 
 /* คอนเทนเนอร์ใส่กล่องราคา */
 .price-container {
     display: flex;
-    gap: 2.5vw; /* ระยะห่างระหว่างกล่องรับซื้อ-ขายออก */
+    gap: 2.5vw; 
     width: 100%;
     justify-content: center;
 }
 
-/* จัดกล่องทองรูปพรรณ (ที่มีกล่องเดียว) ให้ความกว้างเท่ากับกล่องด้านบน */
 .price-container.single-price .price-row {
     width: 48.75%;
     flex: none;
 }
 
-/* กล่องแสดงราคา */
+/* 🌟 กล่องแสดงราคา (ขยายใหญ่ขึ้น เด่นชัด) */
 .price-row {
     display: flex;
     flex: 1;
-    height: 17vh; /* ความสูงพอดีกับหน้าจอทีวี 16:9 */
-    border-radius: 22px;
+    height: 20vh; /* เพิ่มความสูงกล่องให้หนาขึ้น */
+    border-radius: 25px; /* ปรับความโค้งให้สวยรับกับกล่องใหญ่ */
     overflow: hidden;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45); /* เงาเข้มขึ้น ทำให้ป้ายเด้งลอยมา */
+    border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
 .price-label {
@@ -97,21 +125,22 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(1.3rem, 2.2vw, 3.5vh);
+    font-size: clamp(2rem, 3.5vw, 5vh); /* ใหญ่และเด่นชัดมาก */
     font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
     white-space: nowrap;
 }
 
 .price-value {
     width: 68%;
     background-color: #ffffff;
-    color: #000;
+    color: #000; /* สีดำบนพื้นขาวชัดที่สุดจากระยะไกล */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(2.5rem, 5.2vw, 7.5vh); /* ปรับขนาดให้พอดีกล่องขาว ไม่ล้นออกนอกขอบ */
+    font-size: clamp(3.5rem, 7vw, 10vh); /* 🌟 ตัวเลขใหญ่ยักษ์ เต็มตา! */
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     white-space: nowrap;
     padding: 0 1vw;
 }
@@ -128,12 +157,12 @@ html, body {
 /* 4. แถบข้อความตัววิ่งด้านล่าง */
 .marquee-section {
     height: 9vh;
-    background-color: #8B0000; /* แดงเข้มให้ตัดกับพื้นหลัง */
+    background-color: #8B0000; 
     border-top: 3px solid #FFFF00;
     color: #FFFF00;
     display: flex;
     align-items: center;
-    font-size: clamp(1.4rem, 3.2vh, 4vh);
+    font-size: clamp(1.6rem, 3.5vh, 4.5vh); /* ขยายตัววิ่งขึ้นอีกนิด */
     font-weight: 500;
     z-index: 10;
     overflow: hidden;
