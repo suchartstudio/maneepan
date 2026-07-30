@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getFirestore, doc, onSnapshot, collection, addDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ==========================================
-// 1. ตั้งค่าที่อยู่ของไฟล์สื่อบน GitHub
+// 1. ตั้งค่าที่อยู่ของไฟล์สื่อบน GitHub (สามารถเว้นว่างได้เนื่องจากซ่อนสื่อในหน้าแรกแล้ว)
 const GITHUB_BASE_URL = ""; 
 
 const currentPlaylist = [
@@ -85,11 +85,9 @@ async function fetchHuaSengHengPrice() {
         let data = null;
 
         try {
-            // 1. ลองดึงข้อมูลจากฮั่วเซ่งเฮงโดยตรง
             const res = await fetch(targetUrl, { cache: "no-store" });
             data = await res.json();
         } catch (e) {
-            // 2. หากเบราว์เซอร์บล็อกความปลอดภัย (CORS) ให้สลับไปผ่านระบบ Proxy อัตโนมัติ
             const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&cb=${Date.now()}`;
             const res = await fetch(proxyUrl);
             const proxyData = await res.json();
@@ -100,15 +98,18 @@ async function fetchHuaSengHengPrice() {
             throw new Error("ไม่สามารถอ่านข้อมูลจากฮั่วเซ่งเฮงได้");
         }
 
-        // โครงสร้างข้อมูลฮั่วเซ่งเฮง: Array[0] มักจะเป็นทองแท่ง, Array[1] มักจะเป็นทองรูปพรรณ
         const barData = data[0];
         const ornData = data.length > 1 ? data[1] : data[0];
+        
+        // --- ส่วนที่ปรับปรุง: คำนวณหัก 5% จากราคารับซื้อทองแท่ง ---
+        const rawBarBuy = parseFloat(barData.Buy.toString().replace(/,/g, ''));
+        const calculatedOrnBuy = Math.round(rawBarBuy * 0.95); // คำนวณหัก 5% และปัดเศษ
 
         return {
-            rawBarBuy: parseFloat(barData.Buy.toString().replace(/,/g, '')), 
+            rawBarBuy: rawBarBuy, 
             barBuy: formatToIntegerPrice(barData.Buy),
             barSell: formatToIntegerPrice(barData.Sell),
-            ornamentBuy: formatToIntegerPrice(ornData.Buy),
+            ornamentBuy: calculatedOrnBuy.toLocaleString('en-US'), // ใช้ราคาที่คำนวณใหม่
             ornamentSell: formatToIntegerPrice(ornData.Sell),
             updateTime: barData.StrTimeUpdate || `อัพเดทราคาล่าสุด: วันที่ ${new Date().toLocaleDateString('th-TH')}`
         };
@@ -122,13 +123,18 @@ function updateTextData(data) {
     if(data.barBuy !== undefined) document.getElementById('bar-buy').innerText = data.barBuy;
     if(data.barSell !== undefined) document.getElementById('bar-sell').innerText = data.barSell;
     if(data.ornamentBuy !== undefined) document.getElementById('ornament-buy').innerText = data.ornamentBuy;
-    if(data.ornamentSell !== undefined) document.getElementById('ornament-sell').innerText = data.ornamentSell;
+    
+    const ornSellEl = document.getElementById('ornament-sell');
+    if(ornSellEl && data.ornamentSell !== undefined) ornSellEl.innerText = data.ornamentSell;
+    
     if (data.marquee !== undefined) document.getElementById('marquee-text').innerText = data.marquee;
     if (data.updateTime !== undefined) document.getElementById('update-time').innerText = data.updateTime;
 }
 
+// ฟังก์ชันเล่นสื่อ (ถูกซ่อนใน HTML แล้ว แต่คงไว้เพื่อป้องกัน Error)
 function playCurrentMedia() {
     const mediaContainer = document.getElementById('media-container');
+    if(!mediaContainer) return;
 
     if (currentPlaylist.length === 0) {
         mediaContainer.innerHTML = `<div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#333; color:#fff; font-size:2vw;">ไม่พบไฟล์สื่อ...</div>`;
@@ -209,20 +215,27 @@ onSnapshot(doc(db, "branches", branchId), async (docSnap) => {
             autoFetchInterval = setInterval(async () => {
                 const freshPrice = await fetchHuaSengHengPrice(); // ตรวจสอบราคาทุกนาที
                 if (freshPrice && freshPrice.barBuy !== "-") {
-                    updateTextData(freshPrice);
+                    updateTextData({ ...config, ...freshPrice });
                     checkAndRecordPrice(freshPrice.rawBarBuy);
                 }
             }, 60000);
 
         } else {
             const manualConfig = { ...config };
+            
+            // --- ส่วนที่ปรับปรุง: โหมดกำหนดเอง คำนวณหัก 5% อัตโนมัติ ---
             if (manualConfig.barBuy) {
                 const rawManualPrice = parseFloat(manualConfig.barBuy.toString().replace(/,/g, ''));
                 checkAndRecordPrice(rawManualPrice);
+                
+                // คำนวณราคาทองรูปพรรณ (รับซื้อ) จากราคาทองแท่ง (รับซื้อ) ที่ตั้งเอง
+                const calculatedManualOrnBuy = Math.round(rawManualPrice * 0.95);
+                
                 manualConfig.barBuy = formatToIntegerPrice(manualConfig.barBuy);
+                manualConfig.ornamentBuy = calculatedManualOrnBuy.toLocaleString('en-US'); // แทนที่ค่าเดิม
             }
+            
             if (manualConfig.barSell) manualConfig.barSell = formatToIntegerPrice(manualConfig.barSell);
-            if (manualConfig.ornamentBuy) manualConfig.ornamentBuy = formatToIntegerPrice(manualConfig.ornamentBuy);
             if (manualConfig.ornamentSell) manualConfig.ornamentSell = formatToIntegerPrice(manualConfig.ornamentSell);
             
             if (config.updatedAt) {
