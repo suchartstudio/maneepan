@@ -268,25 +268,23 @@
             }
         }
 
-  // ฟังก์ชันตรวจสอบและบันทึกราคาใหม่จากฮั่วเซ่งเฮง
+        // ฟังก์ชันตรวจสอบและบันทึกราคาใหม่จากสมาคมค้าทองคำ
         async function fetchAndRecordPrice() {
             try {
-                const targetUrl = 'https://apicheckpricev3.huasengheng.com/api/Values/GetPrice';
-                let data = null;
-
-                try {
-                    const res = await fetch(targetUrl, { cache: "no-store" });
-                    data = await res.json();
-                } catch (e) {
-                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&cb=${Date.now()}`;
-                    const res = await fetch(proxyUrl);
-                    const proxyData = await res.json();
-                    data = JSON.parse(proxyData.contents);
-                }
+                const targetUrl = 'https://classic.goldtraders.or.th/default.aspx';
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&cb=${Date.now()}`;
                 
-                if (data && data.length > 0) {
-                    const barData = data[0];
-                    const currentBuyPrice = parseFloat(barData.Buy.toString().replace(/,/g, ''));
+                const res = await fetch(proxyUrl);
+                const proxyData = await res.json();
+                const htmlString = proxyData.contents;
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlString, 'text/html');
+
+                const barBuyEl = doc.getElementById('DetailPlace_uc_goldprices1_lblBLBuy');
+                
+                if (barBuyEl) {
+                    const currentBuyPrice = parseFloat(barBuyEl.innerText.replace(/,/g, ''));
                     document.getElementById('current-price').innerText = formatNumber(currentBuyPrice);
 
                     if (lastRecordedPrice === null || currentBuyPrice !== lastRecordedPrice) {
@@ -298,7 +296,7 @@
                     }
                 }
             } catch (error) {
-                console.error("ดึงข้อมูล API ฮั่วเซ่งเฮง ล้มเหลว:", error);
+                console.error("ดึงข้อมูลจากเว็บสมาคมค้าทองคำ ล้มเหลว:", error);
             }
         }
 
