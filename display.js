@@ -108,10 +108,10 @@ async function fetchGoldPrice() {
 
         return {
             rawBarBuy: rawBarBuy, 
-            barBuy: barBuyEl.innerText.trim(),
-            barSell: barSellEl.innerText.trim(),
+            barBuy: formatToIntegerPrice(barBuyEl.innerText),
+            barSell: formatToIntegerPrice(barSellEl.innerText),
             ornamentBuy: calculatedOrnBuy.toLocaleString('en-US'), 
-            ornamentSell: ornSellEl.innerText.trim(),
+            ornamentSell: formatToIntegerPrice(ornSellEl.innerText),
             updateTime: `อัพเดทล่าสุดตามสมาคมฯ: วันที่ ${new Date().toLocaleDateString('th-TH')} เวลา ${updateTimeEl.innerText.trim()}`
         };
     } catch (error) {
