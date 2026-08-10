@@ -268,15 +268,13 @@
             }
         }
 
-        // ฟังก์ชันตรวจสอบและบันทึกราคาใหม่จากสมาคมค้าทองคำ
-        async function fetchAndRecordPrice() {
+      async function fetchAndRecordPrice() {
             try {
                 const targetUrl = 'https://classic.goldtraders.or.th/default.aspx';
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&cb=${Date.now()}`;
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
                 
                 const res = await fetch(proxyUrl);
-                const proxyData = await res.json();
-                const htmlString = proxyData.contents;
+                const htmlString = await res.text();
 
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlString, 'text/html');
