@@ -82,18 +82,20 @@ function formatToIntegerPrice(priceStr) {
 async function fetchGoldPrice() {
     try {
         const targetUrl = 'https://classic.goldtraders.or.th/default.aspx';
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&cb=${Date.now()}`;
+        // เปลี่ยนมาใช้ corsproxy.io ซึ่งเสถียรกว่าบน GitHub Pages
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
         
         const res = await fetch(proxyUrl);
-        const proxyData = await res.json();
-        const htmlString = proxyData.contents;
+        if (!res.ok) throw new Error("Network response was not ok");
+        
+        // รับค่ามาเป็น Text (HTML) โดยตรง ไม่ต้องผ่าน JSON
+        const htmlString = await res.text(); 
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlString, 'text/html');
 
         const barBuyEl = doc.getElementById('DetailPlace_uc_goldprices1_lblBLBuy');
         const barSellEl = doc.getElementById('DetailPlace_uc_goldprices1_lblBLSell');
-        const ornBuyEl = doc.getElementById('DetailPlace_uc_goldprices1_lblOMBuy');
         const ornSellEl = doc.getElementById('DetailPlace_uc_goldprices1_lblOMSell');
         const updateTimeEl = doc.getElementById('DetailPlace_uc_goldprices1_lblAsTime');
 
@@ -102,7 +104,6 @@ async function fetchGoldPrice() {
         }
 
         const rawBarBuy = parseFloat(barBuyEl.innerText.replace(/,/g, ''));
-        
         const calculatedOrnBuy = Math.round(rawBarBuy * 0.95);
 
         return {
