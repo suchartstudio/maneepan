@@ -77,44 +77,44 @@ function formatToIntegerPrice(priceStr) {
 }
 
 // ==========================================
-// 3. ฟังก์ชันดึงราคาใหม่จาก "ฮั่วเซ่งเฮง"
+// 3. ฟังก์ชันดึงราคาใหม่จาก "สมาคมค้าทองคำ" 
 // ==========================================
-async function fetchHuaSengHengPrice() {
+async function fetchGoldPrice() {
     try {
-        const targetUrl = 'https://apicheckpricev3.huasengheng.com/api/Values/GetPrice';
-        let data = null;
-
-        try {
-            const res = await fetch(targetUrl, { cache: "no-store" });
-            data = await res.json();
-        } catch (e) {
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&cb=${Date.now()}`;
-            const res = await fetch(proxyUrl);
-            const proxyData = await res.json();
-            data = JSON.parse(proxyData.contents);
-        }
-
-        if (!data || !Array.isArray(data) || data.length === 0) {
-            throw new Error("ไม่สามารถอ่านข้อมูลจากฮั่วเซ่งเฮงได้");
-        }
-
-        const barData = data[0];
-        const ornData = data.length > 1 ? data[1] : data[0];
+        const targetUrl = 'https://classic.goldtraders.or.th/default.aspx';
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&cb=${Date.now()}`;
         
-        // --- ส่วนที่ปรับปรุง: คำนวณหัก 5% จากราคารับซื้อทองแท่ง ---
-        const rawBarBuy = parseFloat(barData.Buy.toString().replace(/,/g, ''));
-        const calculatedOrnBuy = Math.round(rawBarBuy * 0.95); // คำนวณหัก 5% และปัดเศษ
+        const res = await fetch(proxyUrl);
+        const proxyData = await res.json();
+        const htmlString = proxyData.contents;
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+
+        const barBuyEl = doc.getElementById('DetailPlace_uc_goldprices1_lblBLBuy');
+        const barSellEl = doc.getElementById('DetailPlace_uc_goldprices1_lblBLSell');
+        const ornBuyEl = doc.getElementById('DetailPlace_uc_goldprices1_lblOMBuy');
+        const ornSellEl = doc.getElementById('DetailPlace_uc_goldprices1_lblOMSell');
+        const updateTimeEl = doc.getElementById('DetailPlace_uc_goldprices1_lblAsTime');
+
+        if (!barBuyEl) {
+            throw new Error("ไม่สามารถอ่านข้อมูลจากเว็บสมาคมค้าทองคำได้");
+        }
+
+        const rawBarBuy = parseFloat(barBuyEl.innerText.replace(/,/g, ''));
+        
+        const calculatedOrnBuy = Math.round(rawBarBuy * 0.95);
 
         return {
             rawBarBuy: rawBarBuy, 
-            barBuy: formatToIntegerPrice(barData.Buy),
-            barSell: formatToIntegerPrice(barData.Sell),
-            ornamentBuy: calculatedOrnBuy.toLocaleString('en-US'), // ใช้ราคาที่คำนวณใหม่
-            ornamentSell: formatToIntegerPrice(ornData.Sell),
-            updateTime: barData.StrTimeUpdate || `อัพเดทราคาล่าสุด: วันที่ ${new Date().toLocaleDateString('th-TH')}`
+            barBuy: barBuyEl.innerText.trim(),
+            barSell: barSellEl.innerText.trim(),
+            ornamentBuy: calculatedOrnBuy.toLocaleString('en-US'), 
+            ornamentSell: ornSellEl.innerText.trim(),
+            updateTime: `อัพเดทล่าสุดตามสมาคมฯ: วันที่ ${new Date().toLocaleDateString('th-TH')} เวลา ${updateTimeEl.innerText.trim()}`
         };
     } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการดึงราคาจาก ฮั่วเซ่งเฮง:", error);
+        console.error("เกิดข้อผิดพลาดในการดึงราคาจากสมาคมค้าทองคำ:", error);
         return null; 
     }
 }
@@ -204,7 +204,7 @@ onSnapshot(doc(db, "branches", branchId), async (docSnap) => {
         if (autoFetchInterval) clearInterval(autoFetchInterval);
 
         if (config.isAutoMode) {
-            const goldPrice = await fetchHuaSengHengPrice(); // เรียกใช้ API ใหม่
+            const goldPrice = await fetchGoldPrice(); // เรียกใช้ API สมาคมฯ ใหม่
             if (goldPrice && goldPrice.barBuy !== "-") {
                 updateTextData({ ...config, ...goldPrice }); 
                 checkAndRecordPrice(goldPrice.rawBarBuy); 
@@ -213,7 +213,7 @@ onSnapshot(doc(db, "branches", branchId), async (docSnap) => {
             }
 
             autoFetchInterval = setInterval(async () => {
-                const freshPrice = await fetchHuaSengHengPrice(); // ตรวจสอบราคาทุกนาที
+                const freshPrice = await fetchGoldPrice(); // ตรวจสอบราคาทุกนาที
                 if (freshPrice && freshPrice.barBuy !== "-") {
                     updateTextData({ ...config, ...freshPrice });
                     checkAndRecordPrice(freshPrice.rawBarBuy);
