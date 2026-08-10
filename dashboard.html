@@ -90,8 +90,8 @@
         
         let lastRecordedPrice = null;
 
-        function formatNumber(num) {
-            return num.toLocaleString('en-US');
+      function formatNumber(num) {
+            return Math.round(num).toLocaleString('en-US');
         }
 
         // ฟังก์ชันจัดรูปแบบเวลาเป็น HH:MM
