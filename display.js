@@ -77,18 +77,18 @@ function formatToIntegerPrice(priceStr) {
 }
 
 // ==========================================
-// 3. ฟังก์ชันดึงราคาใหม่จาก "สมาคมค้าทองคำ" 
+// 3. ฟังก์ชันดึงราคาใหม่จาก "สมาคมค้าทองคำ" (อัปเดตป้องกัน Cache)
 // ==========================================
 async function fetchGoldPrice() {
     try {
-        const targetUrl = 'https://classic.goldtraders.or.th/default.aspx';
-        // เปลี่ยนมาใช้ corsproxy.io ซึ่งเสถียรกว่าบน GitHub Pages
+        // เติม ?t= timestamp ป้องกัน Proxy และ Browser จำค่าเก่า (Bypass Cache)
+        const targetUrl = `https://classic.goldtraders.or.th/default.aspx?t=${Date.now()}`;
         const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
         
-        const res = await fetch(proxyUrl);
+        // สั่ง cache: 'no-store' เพื่อบังคับดึงข้อมูลสดใหม่เสมอ
+        const res = await fetch(proxyUrl, { cache: 'no-store' });
         if (!res.ok) throw new Error("Network response was not ok");
         
-        // รับค่ามาเป็น Text (HTML) โดยตรง ไม่ต้องผ่าน JSON
         const htmlString = await res.text(); 
 
         const parser = new DOMParser();
